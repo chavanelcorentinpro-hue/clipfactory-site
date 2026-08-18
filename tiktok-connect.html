@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClipFactory — TikTok</title>
+
+<style>
+body{
+  margin:0;
+  background:#090b10;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+.container{
+  max-width:520px;
+  margin:auto;
+  padding:50px 22px;
+  text-align:center;
+}
+.logo{
+  font-size:34px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.subtitle{
+  color:#aaa;
+  margin-bottom:45px;
+}
+.card{
+  background:#151821;
+  padding:30px 22px;
+  border-radius:20px;
+}
+button{
+  width:100%;
+  padding:17px;
+  border:0;
+  border-radius:10px;
+  background:#fe2c55;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.small{
+  color:#888;
+  font-size:13px;
+  margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">ClipFactory</div>
+
+<div class="subtitle">
+Create. Automate. Publish.
+</div>
+
+<div class="card">
+
+<h2>Connect your TikTok account</h2>
+
+<p>
+Connect TikTok to publish your ClipFactory videos.
+</p>
+
+<button onclick="connectTikTok()">
+Connect with TikTok
+</button>
+
+<div class="small">
+You will be redirected to TikTok to authorize ClipFactory.
+</div>
+
+</div>
+</div>
+
+<script>
+
+function randomState(){
+  const array = new Uint32Array(4);
+  crypto.getRandomValues(array);
+  return Array.from(array).join("-");
+}
+
+function connectTikTok(){
+
+  const state = randomState();
+
+  sessionStorage.setItem("tiktok_oauth_state",state);
+
+  const clientKey =
+    "awsk70fg3f86tjdj";
+
+  const redirectUri =
+    "https://chavanelcorentinpro-hue.github.io/clipfactory-site/callback.html";
+
+  const scope =
+    "user.info.basic,video.upload,video.publish";
+
+  const url =
+    "https://www.tiktok.com/v2/auth/authorize/?" +
+    "client_key=" + encodeURIComponent(clientKey) +
+    "&scope=" + encodeURIComponent(scope) +
+    "&response_type=code" +
+    "&redirect_uri=" + encodeURIComponent(redirectUri) +
+    "&state=" + encodeURIComponent(state);
+
+  window.location.href=url;
+}
+
+</script>
+
+</body>
+</html>
