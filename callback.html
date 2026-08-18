@@ -2,11 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>ClipFactory - TikTok Connection</title>
 </head>
 <body>
   <h1>ClipFactory</h1>
-  <p>TikTok authorization completed. You can return to ClipFactory.</p>
+  <h2 id="status">Connecting to TikTok...</h2>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const code = params.get("code");
+    const error = params.get("error");
+    const errorDescription = params.get("error_description");
+
+    if (error) {
+      document.getElementById("status").textContent =
+        "TikTok authorization failed: " +
+        (errorDescription || error);
+    } else if (code) {
+      sessionStorage.setItem("tiktok_authorization_code", code);
+
+      document.getElementById("status").textContent =
+        "TikTok authorization successful.";
+
+      console.log("TikTok authorization code received.");
+    } else {
+      document.getElementById("status").textContent =
+        "No TikTok authorization code received.";
+    }
+  </script>
 </body>
 </html>
