@@ -1,0 +1,7 @@
+tiktok_token.json
+*token*.json
+.env
+.env.*
+*.secret
+secrets/
+tmp/
