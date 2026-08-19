@@ -5,3 +5,14 @@ tiktok_token.json
 *.secret
 secrets/
 tmp/
+
+# ClipFactory local/runtime
+*.backup
+*.backup-*
+__pycache__/
+*.pyc
+local-api/
+.env
+.env.*
+*tiktok_token*
+*.log

@@ -8,10 +8,53 @@ if [ -z "$FILE" ] || [ ! -f "$FILE" ]; then
     exit 1
 fi
 
+echo "🔐 Vérification accès TikTok..."
+
+"$HOME/clipfactory-site/scripts/tiktok-refresh.sh" || {
+    echo "❌ Impossible de renouveler l'accès TikTok"
+    exit 1
+}
+
 TOKEN=$(python -c 'import json,os; print(json.load(open(os.path.expanduser("~/tiktok_token.json")))["access_token"])')
+
+if [ -z "$TOKEN" ]; then
+    echo "❌ Access token TikTok absent"
+    exit 1
+fi
+
+echo "✅ Accès TikTok prêt"
 
 SIZE=$(stat -c%s "$FILE")
 LAST=$((SIZE-1))
+
+QUOTA_LOCK="$HOME/.clipfactory/tiktok_quota.lock"
+
+if [ -f "$QUOTA_LOCK" ]; then
+
+    NOW=$(date +%s)
+
+    LOCK_TIME=$(stat -c %Y "$QUOTA_LOCK" 2>/dev/null || echo 0)
+
+    AGE=$((NOW - LOCK_TIME))
+
+    # 24-hour defensive cooldown
+    if [ "$AGE" -lt 86400 ]; then
+
+        REMAIN=$((86400 - AGE))
+
+        echo "⚠️ TikTok quota cooldown active"
+        echo "Retry in approximately $((REMAIN / 3600)) hour(s)."
+
+        exit 2
+
+    else
+
+        rm -f "$QUOTA_LOCK"
+
+    fi
+
+fi
+
 
 echo "🎬 ClipFactory → TikTok"
 echo "Fichier : $FILE"
@@ -30,8 +73,21 @@ UPLOAD_URL=$(printf '%s' "$INIT" | python -c \
 'import sys,json; print(json.load(sys.stdin).get("data",{}).get("upload_url",""))')
 
 if [ -z "$UPLOAD_URL" ]; then
+
     echo "❌ Initialisation TikTok impossible"
+
     echo "$INIT" | python -m json.tool
+
+    if echo "$INIT"        | grep -q "spam_risk_too_many_pending_share"; then
+
+        touch "$QUOTA_LOCK"
+
+        echo
+        echo "⚠️ TikTok quota circuit breaker activated."
+        echo "ClipFactory will avoid repeated retries."
+
+    fi
+
     unset TOKEN
     exit 1
 fi
@@ -39,7 +95,7 @@ fi
 echo "📤 Upload..."
 
 HTTP=$(curl -sS \
--o /tmp/clipfactory_tiktok_response \
+-o $HOME/.clipfactory/tiktok_put_response \
 -w "%{http_code}" \
 -X PUT "$UPLOAD_URL" \
 -H "Content-Type: video/mp4" \
@@ -49,7 +105,7 @@ HTTP=$(curl -sS \
 
 if [ "$HTTP" != "201" ]; then
     echo "❌ Upload TikTok HTTP $HTTP"
-    cat /tmp/clipfactory_tiktok_response
+    cat $HOME/.clipfactory/tiktok_put_response
     unset TOKEN
     exit 1
 fi

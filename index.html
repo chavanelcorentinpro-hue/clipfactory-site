@@ -1,14 +1,1231 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ClipFactory</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  background:#090b10;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  padding:0 0 40px;
+}
+
+.app{
+  width:calc(100% - 28px);
+  max-width:540px;
+  margin:0 auto;
+  padding-top:28px;
+}
+
+h1{
+  margin:0;
+  font-size:40px;
+  line-height:1;
+}
+
+.subtitle{
+  color:#8b93a0;
+  margin:7px 0 26px;
+  font-size:13px;
+}
+
+.card{
+  background:#151821;
+  border:1px solid #232833;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:16px;
+}
+
+.card h2{
+  margin:0 0 16px;
+  font-size:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.metric{
+  background:#090b10;
+  padding:14px;
+  border-radius:13px;
+}
+
+.metric-label{
+  color:#7c8491;
+  font-size:9px;
+  font-weight:bold;
+  letter-spacing:.8px;
+}
+
+.metric-value{
+  font-size:24px;
+  font-weight:800;
+  margin-top:5px;
+}
+
+.metric-sub{
+  color:#626a76;
+  font-size:10px;
+  margin-top:4px;
+}
+
+.row{
+  padding:13px 0;
+  border-bottom:1px solid #252a33;
+}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.row-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.file{
+  font-size:13px;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+
+.muted{
+  color:#7f8793;
+  font-size:12px;
+  margin-top:5px;
+  overflow-wrap:anywhere;
+}
+
+.badge{
+  display:inline-block;
+  background:#090b10;
+  border-radius:999px;
+  padding:4px 8px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.green{color:#25f4aa}
+.yellow{color:#ffd166}
+.red{color:#ff647c}
+.blue{color:#8ab4ff}
+.gray{color:#9ca3af}
+
+button{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:15px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.5;
+}
+
+.primary{
+  background:#fe2c55;
+  color:white;
+}
+
+.secondary{
+  background:#242933;
+  color:white;
+  margin-top:10px;
+}
+
+.greenbtn{
+  background:#25f4aa;
+  color:#07110e;
+}
+
+.status{
+  margin-top:13px;
+  color:#929aa6;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.alert{
+  background:#2a2111;
+  color:#ffd166;
+  border-radius:12px;
+  padding:13px;
+  font-size:12px;
+  line-height:1.45;
+  margin-top:13px;
+}
+
+.errorbox{
+  background:#291418;
+  color:#ff8b9d;
+  border-radius:12px;
+  padding:13px;
+  font-size:11px;
+  line-height:1.45;
+  margin-top:13px;
+}
+
+.switch-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.switch{
+  position:relative;
+  width:58px;
+  height:32px;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#303640;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+.dot{
+  position:absolute;
+  width:24px;
+  height:24px;
+  left:4px;
+  top:4px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+  pointer-events:none;
+}
+
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:#090b10;
+  padding:13px;
+  border-radius:12px;
+  color:#9aa2ae;
+  font-size:10px;
+  max-height:330px;
+  overflow:auto;
+}
+
+.links{
+  text-align:center;
+  margin-top:26px;
+}
+
+.links a{
+  color:#7e8794;
+  font-size:11px;
+  margin:0 6px;
+}
+</style>
 </head>
+
 <body>
-<h1>ClipFactory</h1>
-<p>Automated short-form video creation and publishing platform.</p>
-<p><a href="privacy.html">Privacy Policy</a></p>
-<p><a href="terms.html">Terms of Service</a></p>
+
+<div class="app">
+
+  <h1>ClipFactory</h1>
+  <div class="subtitle">
+    Create. Automate. Publish.
+  </div>
+
+
+  <section class="card">
+    <h2>Aujourd'hui</h2>
+
+    <div id="today-grid" class="grid"></div>
+
+    <div id="today-next" class="status">
+      Chargement...
+    </div>
+  </section>
+
+
+  <section class="card">
+    <h2>TikTok</h2>
+
+    <button id="publishBtn" class="primary">
+      Envoyer sur TikTok
+    </button>
+
+    <div id="publishStatus" class="status">
+      Vérification du bridge...
+    </div>
+  </section>
+
+
+  <section class="card">
+    <h2>Vidéo préparée</h2>
+
+    <div class="row">
+      <div class="muted">Vidéo</div>
+      <div id="videoName" class="file">—</div>
+    </div>
+
+    <div class="row">
+      <div class="muted">Titre</div>
+      <div id="videoTitle" class="file">—</div>
+    </div>
+
+    <div class="row">
+      <div class="muted">Hashtags</div>
+      <div id="videoTags" class="muted">—</div>
+    </div>
+
+    <div class="row">
+      <div class="muted">État</div>
+      <div id="videoResult" class="file">—</div>
+    </div>
+  </section>
+
+
+  <section class="card">
+    <h2>Queue</h2>
+
+    <div id="queueSummary" class="muted">
+      Chargement...
+    </div>
+
+    <div id="queueList"></div>
+
+    <button id="queueSendBtn" class="greenbtn">
+      Envoyer la suivante
+    </button>
+
+    <button id="retryBtn" class="secondary">
+      Réessayer les échecs
+    </button>
+
+    <div id="queueMsg" class="status"></div>
+  </section>
+
+
+  <section class="card">
+    <h2>Planning</h2>
+
+    <div id="scheduleSummary" class="muted">
+      Chargement...
+    </div>
+
+    <div id="scheduleList"></div>
+
+    <div class="row">
+      <div class="switch-row">
+
+        <div>
+          <strong>Autopilot</strong>
+          <div id="autopilotLabel" class="muted">
+            OFF
+          </div>
+        </div>
+
+        <label class="switch">
+
+          <input
+            id="autopilotToggle"
+            type="checkbox">
+
+          <span
+            id="autopilotSlider"
+            class="slider"></span>
+
+          <span
+            id="autopilotDot"
+            class="dot"></span>
+
+        </label>
+
+      </div>
+    </div>
+
+    <div id="scheduleMsg" class="status"></div>
+  </section>
+
+
+  <section class="card">
+    <h2>Système</h2>
+
+    <div id="services" class="grid"></div>
+
+    <div id="quotaBox" class="alert" style="display:none"></div>
+
+    <div id="errorBox" class="errorbox" style="display:none"></div>
+
+    <button id="logsBtn" class="secondary">
+      Afficher les logs
+    </button>
+
+    <pre id="logsBox" style="display:none"></pre>
+  </section>
+
+
+  <div class="links">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+  </div>
+
+</div>
+
+
+<script>
+
+const API="http://127.0.0.1:8787";
+
+const $=id=>document.getElementById(id);
+
+let diagnosticsCache=null;
+
+
+function esc(v){
+
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+
+}
+
+
+function fileName(v){
+
+  return String(v || "")
+    .split("/")
+    .pop();
+
+}
+
+
+function badge(state){
+
+  const classes={
+    PREPARED:"blue",
+    NEXT:"yellow",
+    RETRY:"yellow",
+    SCHEDULED:"blue",
+    DUE:"yellow",
+    SENDING:"yellow",
+    SENT:"green",
+    SUCCESS:"green",
+    FAILED:"red"
+  };
+
+  return `
+    <span class="badge ${classes[state] || "gray"}">
+      ${esc(state || "UNKNOWN")}
+    </span>
+  `;
+
+}
+
+
+function metric(label,value,sub=""){
+
+  return `
+  <div class="metric">
+    <div class="metric-label">${esc(label)}</div>
+    <div class="metric-value">${esc(value)}</div>
+    <div class="metric-sub">${esc(sub)}</div>
+  </div>`;
+
+}
+
+
+function prettyTime(value){
+
+  if(!value) return "—";
+
+  try{
+
+    return new Date(value)
+      .toLocaleString(
+        "fr-FR",
+        {
+          day:"2-digit",
+          month:"2-digit",
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      );
+
+  }catch(e){
+
+    return value;
+
+  }
+
+}
+
+
+function sameDay(value){
+
+  if(!value) return false;
+
+  const d=new Date(value);
+  const n=new Date();
+
+  return (
+    d.getFullYear()===n.getFullYear()
+    &&
+    d.getMonth()===n.getMonth()
+    &&
+    d.getDate()===n.getDate()
+  );
+
+}
+
+
+async function api(path,options={}){
+
+  const r=await fetch(
+    API+path,
+    {
+      cache:"no-store",
+      ...options
+    }
+  );
+
+  let data={};
+
+  try{
+    data=await r.json();
+  }catch(e){}
+
+  if(!r.ok){
+    throw new Error(
+      data.message || ("HTTP "+r.status)
+    );
+  }
+
+  return data;
+
+}
+
+
+async function loadStatus(){
+
+  try{
+
+    const d=await api(
+      "/status?t="+Date.now()
+    );
+
+    $("videoName").textContent=
+      fileName(
+        d.video || d.file
+      ) || "—";
+
+    $("videoTitle").textContent=
+      d.title || "—";
+
+    $("videoTags").textContent=
+      d.hashtags || "—";
+
+    const result=
+      d.result || d.status || "ready";
+
+    if(result==="success"){
+
+      $("videoResult").textContent=
+        "✅ Envoyée";
+
+    }else if(result==="already_published"){
+
+      $("videoResult").textContent=
+        "✅ Déjà envoyée";
+
+    }else if(result==="prepared"){
+
+      $("videoResult").textContent=
+        "✅ Préparée";
+
+    }else if(result==="error"){
+
+      $("videoResult").textContent=
+        "❌ Erreur";
+
+    }else{
+
+      $("videoResult").textContent=
+        result;
+
+    }
+
+  }catch(e){
+
+    $("videoResult").textContent=
+      "Bridge indisponible";
+
+  }
+
+}
+
+
+async function loadQueue(){
+
+  try{
+
+    const d=await api(
+      "/queue?t="+Date.now()
+    );
+
+    const c=d.counts || {};
+
+    $("queueSummary").textContent=
+      `Total ${d.total || 0} · `+
+      `Préparées ${c.PREPARED || 0} · `+
+      `Échecs ${c.FAILED || 0} · `+
+      `Envoyées ${c.SENT || 0}`;
+
+    const items=d.items || [];
+
+    $("queueSendBtn").disabled=
+      !d.next;
+
+    if(!items.length){
+
+      $("queueList").innerHTML=
+        `<div class="status">Queue vide</div>`;
+
+      return;
+    }
+
+    $("queueList").innerHTML=
+      items.slice(0,12).map(
+        item=>`
+        <div class="row">
+
+          <div class="row-top">
+
+            <div class="file">
+              ${esc(fileName(item.file))}
+            </div>
+
+            ${badge(item.state)}
+
+          </div>
+
+          <div class="muted">
+            ${esc(item.title || "")}
+          </div>
+
+          ${
+            item.last_error
+            ?
+            `<div class="errorbox">
+              ${esc(item.last_error)}
+            </div>`
+            :
+            ""
+          }
+
+        </div>`
+      ).join("");
+
+  }catch(e){
+
+    $("queueSummary").textContent=
+      "Queue indisponible";
+
+  }
+
+}
+
+
+async function loadSchedule(){
+
+  try{
+
+    const d=await api(
+      "/schedule?t="+Date.now()
+    );
+
+    const c=d.counts || {};
+
+    $("scheduleSummary").textContent=
+      `Planifiées ${c.SCHEDULED || 0} · `+
+      `DUE ${c.DUE || 0} · `+
+      `Envoyées ${c.SENT || 0}`;
+
+    const items=d.items || [];
+
+    if(!items.length){
+
+      $("scheduleList").innerHTML=
+        `<div class="status">
+          Aucun planning
+        </div>`;
+
+      return;
+    }
+
+    $("scheduleList").innerHTML=
+      items.slice(0,12).map(
+        item=>`
+        <div class="row">
+
+          <div class="row-top">
+
+            <div class="file">
+              ${esc(fileName(item.file))}
+            </div>
+
+            ${badge(item.state)}
+
+          </div>
+
+          <div class="muted">
+            ${esc(prettyTime(item.scheduled_at))}
+          </div>
+
+        </div>`
+      ).join("");
+
+  }catch(e){
+
+    $("scheduleSummary").textContent=
+      "Planning indisponible";
+
+  }
+
+}
+
+
+function renderAutopilot(enabled){
+
+  $("autopilotToggle").checked=
+    !!enabled;
+
+  $("autopilotLabel").textContent=
+    enabled ? "ON" : "OFF";
+
+  $("autopilotSlider").style.background=
+    enabled
+      ? "#25f4aa"
+      : "#303640";
+
+  $("autopilotDot").style.transform=
+    enabled
+      ? "translateX(26px)"
+      : "translateX(0)";
+
+}
+
+
+async function loadAutopilot(){
+
+  try{
+
+    const d=await api(
+      "/autopilot?t="+Date.now()
+    );
+
+    renderAutopilot(
+      d.enabled
+    );
+
+  }catch(e){
+
+    renderAutopilot(false);
+
+  }
+
+}
+
+
+async function loadDiagnostics(){
+
+  try{
+
+    const d=await api(
+      "/diagnostics?t="+Date.now()
+    );
+
+    diagnosticsCache=d;
+
+    const services=[
+      ["Bridge",d.bridge],
+      ["Interface",d.web],
+      ["Autopilot",d.worker],
+      ["Watchdog",d.watchdog]
+    ];
+
+    $("services").innerHTML=
+      services.map(
+        ([name,x])=>
+        metric(
+          name,
+          x && x.active
+            ? "ON"
+            : "OFF",
+          x && x.active
+            ? "actif"
+            : "arrêté"
+        )
+      ).join("");
+
+
+    if(d.quota_blocked){
+
+      $("quotaBox").style.display="block";
+
+      $("quotaBox").innerHTML=
+        "<strong>⚠️ Limite TikTok temporaire</strong><br>"+
+        "ClipFactory évite les nouvelles tentatives agressives.";
+
+    }else{
+
+      $("quotaBox").style.display="none";
+
+    }
+
+
+    if(d.last_error){
+
+      $("errorBox").style.display="block";
+
+      $("errorBox").textContent=
+        "Dernière erreur : "+
+        d.last_error;
+
+    }else{
+
+      $("errorBox").style.display="none";
+
+    }
+
+    renderLogs();
+
+  }catch(e){
+
+    $("services").innerHTML=
+      metric(
+        "Système",
+        "OFFLINE",
+        e.message
+      );
+
+  }
+
+}
+
+
+function renderLogs(){
+
+  if(
+    !diagnosticsCache
+    ||
+    $("logsBox").style.display==="none"
+  ){
+    return;
+  }
+
+  const l=
+    diagnosticsCache.logs || {};
+
+  $("logsBox").textContent=
+    "=== AUTOPILOT ===\n"+
+    (l.autopilot || "")+
+    "\n=== WATCHDOG ===\n"+
+    (l.watchdog || "")+
+    "\n=== BRIDGE ===\n"+
+    (l.bridge || "")+
+    "\n=== WORKFLOW ===\n"+
+    (l.oneclick || "");
+
+}
+
+
+async function loadToday(){
+
+  try{
+
+    const [
+      schedule,
+      queue,
+      autopilot,
+      diagnostics
+    ]=await Promise.all([
+
+      api("/schedule?t="+Date.now()),
+      api("/queue?t="+Date.now()),
+      api("/autopilot?t="+Date.now()),
+      api("/diagnostics?t="+Date.now())
+
+    ]);
+
+
+    const today=
+      (schedule.items || [])
+      .filter(
+        x=>sameDay(
+          x.scheduled_at
+        )
+      );
+
+
+    const sent=
+      today.filter(
+        x=>x.state==="SENT"
+      ).length;
+
+
+    const remaining=
+      (queue.items || [])
+      .filter(
+        x=>[
+          "PREPARED",
+          "NEXT",
+          "RETRY"
+        ].includes(
+          x.state
+        )
+      ).length;
+
+
+    $("today-grid").innerHTML=
+
+      metric(
+        "PRÉVU",
+        today.length,
+        "aujourd'hui"
+      )
+
+      +
+
+      metric(
+        "ENVOYÉ",
+        sent,
+        "aujourd'hui"
+      )
+
+      +
+
+      metric(
+        "QUEUE",
+        remaining,
+        "restantes"
+      )
+
+      +
+
+      metric(
+        "AUTOPILOT",
+        autopilot.enabled
+          ? "ON"
+          : "OFF",
+        diagnostics.quota_blocked
+          ? "TikTok limité"
+          : "système"
+      );
+
+
+    const future=
+      (schedule.items || [])
+      .filter(
+        x=>[
+          "SCHEDULED",
+          "DUE"
+        ].includes(
+          x.state
+        )
+      )
+      .sort(
+        (a,b)=>
+          new Date(a.scheduled_at)
+          -
+          new Date(b.scheduled_at)
+      );
+
+
+    if(future.length){
+
+      const next=future[0];
+
+      $("today-next").innerHTML=
+        "<strong>Prochaine publication</strong><br>"+
+        esc(fileName(next.file))+
+        "<br>"+
+        esc(prettyTime(next.scheduled_at))+
+        " · "+
+        esc(next.state);
+
+    }else{
+
+      $("today-next").innerHTML=
+        "<strong>Aucune publication à venir</strong>";
+
+    }
+
+  }catch(e){
+
+    $("today-grid").innerHTML=
+      metric(
+        "ÉTAT",
+        "OFFLINE",
+        e.message
+      );
+
+  }
+
+}
+
+
+async function refreshAll(){
+
+  await Promise.all([
+    loadStatus(),
+    loadQueue(),
+    loadSchedule(),
+    loadAutopilot(),
+    loadDiagnostics(),
+    loadToday()
+  ]);
+
+}
+
+
+$("publishBtn").addEventListener(
+  "click",
+  async()=>{
+
+    $("publishBtn").disabled=true;
+
+    $("publishStatus").textContent=
+      "Envoi TikTok en cours...";
+
+    try{
+
+      await api(
+        "/upload",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          }
+        }
+      );
+
+      $("publishStatus").textContent=
+        "Upload lancé.";
+
+    }catch(e){
+
+      $("publishStatus").textContent=
+        "Erreur : "+e.message;
+
+    }
+
+    $("publishBtn").disabled=false;
+
+  }
+);
+
+
+$("queueSendBtn").addEventListener(
+  "click",
+  async()=>{
+
+    $("queueSendBtn").disabled=true;
+
+    $("queueMsg").textContent=
+      "Envoi de la prochaine vidéo...";
+
+    try{
+
+      await api(
+        "/queue/send",
+        {
+          method:"POST"
+        }
+      );
+
+      $("queueMsg").textContent=
+        "Upload lancé.";
+
+    }catch(e){
+
+      $("queueMsg").textContent=
+        "Erreur : "+e.message;
+
+    }
+
+    setTimeout(
+      refreshAll,
+      1500
+    );
+
+  }
+);
+
+
+$("retryBtn").addEventListener(
+  "click",
+  async()=>{
+
+    try{
+
+      const d=await api(
+        "/retry",
+        {
+          method:"POST"
+        }
+      );
+
+      $("queueMsg").textContent=
+        `${d.retried || 0} vidéo(s) remises en attente.`;
+
+      await loadQueue();
+
+    }catch(e){
+
+      $("queueMsg").textContent=
+        "Erreur : "+e.message;
+
+    }
+
+  }
+);
+
+
+$("autopilotToggle").addEventListener(
+  "change",
+  async()=>{
+
+    const enabled=
+      $("autopilotToggle").checked;
+
+    renderAutopilot(enabled);
+
+    try{
+
+      await api(
+        "/autopilot",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            enabled
+          })
+        }
+      );
+
+      $("scheduleMsg").textContent=
+        enabled
+          ? "Autopilot activé."
+          : "Autopilot désactivé.";
+
+    }catch(e){
+
+      renderAutopilot(
+        !enabled
+      );
+
+      $("scheduleMsg").textContent=
+        "Erreur : "+e.message;
+
+    }
+
+  }
+);
+
+
+$("logsBtn").addEventListener(
+  "click",
+  ()=>{
+
+    const hidden=
+      $("logsBox").style.display==="none";
+
+    $("logsBox").style.display=
+      hidden
+        ? "block"
+        : "none";
+
+    $("logsBtn").textContent=
+      hidden
+        ? "Masquer les logs"
+        : "Afficher les logs";
+
+    renderLogs();
+
+  }
+);
+
+
+(async()=>{
+
+  try{
+
+    await api("/health");
+
+    $("publishStatus").textContent=
+      "✓ Bridge ClipFactory prêt";
+
+  }catch(e){
+
+    $("publishStatus").textContent=
+      "Bridge local indisponible";
+
+  }
+
+  try{
+
+    await api(
+      "/prepare",
+      {
+        method:"POST"
+      }
+    );
+
+  }catch(e){}
+
+  await refreshAll();
+
+})();
+
+
+setInterval(
+  refreshAll,
+  5000
+);
+
+</script>
+
 </body>
 </html>
