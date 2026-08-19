@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClipFactory - TikTok Connection</title>
+</head>
+<body>
+<h1>ClipFactory</h1>
+<p>TikTok authorization completed. You can return to ClipFactory.</p>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
+const error = params.get("error");
+
+if (code) {
+    sessionStorage.setItem("tiktok_oauth_code", code);
+    document.querySelector("p").textContent =
+        "TikTok authorization successful. You can return to ClipFactory.";
+}
+
+if (error) {
+    document.querySelector("p").textContent =
+        "TikTok authorization failed: " + error;
+}
+</script>
+</body>
+</html>
