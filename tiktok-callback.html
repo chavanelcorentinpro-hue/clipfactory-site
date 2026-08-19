@@ -1,28 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ClipFactory - TikTok Connection</title>
+<title>ClipFactory - TikTok</title>
+<style>
+body{font-family:Arial;background:#090b10;color:white;padding:30px}
+.box{max-width:600px;margin:auto;background:#151821;padding:30px;border-radius:20px}
+.ok{color:#25f4aa}
+code{display:block;word-break:break-all;background:#090b10;padding:15px;border-radius:10px}
+button{padding:15px;width:100%;background:#fe2c55;color:white;border:0;border-radius:10px;font-size:18px}
+</style>
 </head>
 <body>
+<div class="box">
 <h1>ClipFactory</h1>
-<p>TikTok authorization completed. You can return to ClipFactory.</p>
+<h2 class="ok">✓ TikTok connecté</h2>
+<p>Code OAuth reçu :</p>
+<code id="code">Recherche...</code>
+<br>
+<button onclick="copyCode()">Copier le code</button>
+</div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const code = params.get("code");
-const error = params.get("error");
+const p = new URLSearchParams(location.search);
+const code = p.get("code");
 
-if (code) {
-    sessionStorage.setItem("tiktok_oauth_code", code);
-    document.querySelector("p").textContent =
-        "TikTok authorization successful. You can return to ClipFactory.";
-}
+document.getElementById("code").textContent =
+    code || "Aucun code reçu";
 
-if (error) {
-    document.querySelector("p").textContent =
-        "TikTok authorization failed: " + error;
+if(code) sessionStorage.setItem("tiktok_oauth_code",code);
+
+function copyCode(){
+    if(code) navigator.clipboard.writeText(code);
 }
 </script>
 </body>
